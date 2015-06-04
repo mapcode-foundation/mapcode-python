@@ -25,35 +25,66 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 Original C library created by Pieter Geelen. Work on Java version
-of the mapcode library by Rijn Buve and Matthew Lowden.
+of the mapcode library by Rijn Buve and Matthew Lowden. Python
+interface by Erik Bos.
 
-# Using Git and `.gitignore`
+# Status
 
-It's good practice to set up a personal global `.gitignore` file on your machine which filters a number of files
-on your file systems that you do not wish to submit to the Git repository. You can set up your own global
-`~/.gitignore` file by executing:
-`git config --global core.excludesfile ~/.gitignore`
-
-In general, add the following file types to `~/.gitignore` (each entry should be on a separate line):
-`*.com *.class *.dll *.exe *.o *.so *.log *.sql *.sqlite *.tlog *.epoch *.swp *.hprof *.hprof.index *.releaseBackup *~`
-
-If you're using a Mac, filter:
-`.DS_Store* Thumbs.db`
-
-If you're using IntelliJ IDEA, filter:
-`*.iml *.iws .idea/`
-
-If you're using Eclips, filter:
-`.classpath .project .settings .cache`
-
-If you're using NetBeans, filter: 
-`nb-configuration.xml *.orig`
-
-The local `.gitignore` file in the Git repository itself to reflect those file only that are produced by executing
-regular compile, build or release commands, such as:
-`target/ out/`
+At the moment this module is still in development!
 
 # Bug Reports and New Feature Requests
 
 If you encounter any problems with this library, don't hesitate to use the `Issues` session to file your issues.
 Normally, one of our developers should be able to comment on them and fix. 
+
+# Prequisites
+
+As the Python modules relies upon the Mapcode C library you will 
+need to have a compiler installed to be able to build and install
+this module.
+
+# Installation
+
+Get both the Python and C repositories using:
+
+```git clone https://github.com/mapcode-foundation/mapcode-python
+git clone https://github.com/mapcode-foundation/mapcode-cpp
+cd mapcode-python
+```
+
+Compile the current directory using:
+
+```python setup.py --inplace
+```
+
+Install in your Python environment using:
+
+```cd mapcode-python
+python setup.py install
+```
+
+# Usage
+
+
+```import mapcode
+
+dir (mapcode)
+print mapcode.__doc__
+print mapcode.version()
+print mapcode.decode('NLD 49.4V','')
+print mapcode.decode('IN VY.HV','USA')
+print mapcode.decode('IN VY.HV','RUS')
+print mapcode.decode('D6.58','RU-IN DK.CN0')
+print mapcode.decode('IN VY.HV','')
+print mapcode.decode('RU-IN VY.HV','')
+print mapcode.decode('IN VY.HV','RUS')
+
+print mapcode.isvalid('NLD 49.4V', 1)
+print mapcode.isvalid('VHXG9.FQ9Z',0)
+
+print mapcode.encode_single(52.376514, 4.908542, 'NLD', 2)
+print mapcode.encode_single(41.938434,12.433114, None, 2)
+
+print mapcode.encode(52.376514, 4.908542, 'NLD', 2)
+print mapcode.encode(39.609999,45.949999, 'AZE', 0)
+```
