@@ -1,10 +1,10 @@
-# Mapcode Library for Python
+# Mapcode package for Python
 
 Copyright (C) 2014-2015 Stichting Mapcode Foundation (http://www.mapcode.com)
 
 ----
 
-This Python project contains a library to encode latitude/longitude pairs to mapcodes
+This Python project contains a package to encode latitude/longitude pairs to mapcodes
 and to decode mapcodes back to latitude/longitude pairs.
 
 If you wish to use mapcodes in your own application landscape, consider using running an instance of the
@@ -34,14 +34,19 @@ At the moment this module is still in development!
 
 # Bug Reports and New Feature Requests
 
-If you encounter any problems with this library, don't hesitate to use the `Issues` session to file your issues.
-Normally, one of our developers should be able to comment on them and fix. 
+If you encounter any problems with this package, don't hesitate to use the `Issues` session to file your issues.
+Normally, one of our developers should be able to comment on them and fix.
 
 # Prequisites
 
-As the Python modules relies upon the Mapcode C library you will 
+As the Python modules relies upon the Mapcode C library you will
 need to have a compiler installed to be able to build and install
 this module.
+
+The assumption is that the mapcode-cpp source is available in
+../mapcode-cpp/mapcodelib, if it located in a different place you
+will have to update the include directory in setup.py
+
 
 # Installation
 
@@ -52,16 +57,16 @@ git clone https://github.com/mapcode-foundation/mapcode-cpp
 cd mapcode-python
 ```
 
-Compile the current directory using:
+Compile the package in current directory using:
 
 ```python setup.py --inplace
 ```
 
 Install in your Python environment using:
 
-```cd mapcode-python
-python setup.py install
+```python setup.py install
 ```
+
 
 # Usage
 
@@ -69,6 +74,7 @@ python setup.py install
 ```import mapcode
 
 dir (mapcode)
+
 print mapcode.__doc__
 print mapcode.version()
 print mapcode.decode('NLD 49.4V','')
