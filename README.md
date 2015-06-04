@@ -4,7 +4,7 @@ Copyright (C) 2014-2015 Stichting Mapcode Foundation (http://www.mapcode.com)
 
 ----
 
-This Puthon project contains a library to encode latitude/longitude pairs to mapcodes
+This Python project contains a library to encode latitude/longitude pairs to mapcodes
 and to decode mapcodes back to latitude/longitude pairs.
 
 If you wish to use mapcodes in your own application landscape, consider using running an instance of the
