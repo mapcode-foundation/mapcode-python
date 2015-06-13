@@ -1,9 +1,21 @@
+/*
+ * Copyright (C) 2015 Stichting Mapcode Foundation (http://www.mapcode.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "Python.h"
 #include "mapcoder.c"
-
-PyObject *mapcode_module;
-
-
 
 
 static char version_doc[] = 
@@ -17,8 +29,6 @@ static PyObject *version(PyObject *self, PyObject *args)
 }
 
 
-
-
 static char isvalid_doc[] = 
  "isvalid()\n\
 \n\
@@ -27,9 +37,9 @@ Verify if the provided string has the right mapcode syntax.\n";
 static PyObject *isvalid(PyObject *self, PyObject *args)
 {
     char *mapcode;
-    int includes_territory;
+    int includes_territory = 0;
 
-    if (!PyArg_ParseTuple(args, "si", &mapcode, &includes_territory))
+    if (!PyArg_ParseTuple(args, "s|i", &mapcode, &includes_territory))
        return NULL;
 
     if (compareWithMapcodeFormat(mapcode, includes_territory ? 1 : 0) == 0) {
@@ -38,6 +48,7 @@ static PyObject *isvalid(PyObject *self, PyObject *args)
         return Py_False;
     }
 }
+
 
 static char decode_doc[] = 
  "decode(mapcode, (territoryname))\n\
@@ -57,8 +68,6 @@ static PyObject *decode(PyObject *self, PyObject *args)
     if (territoryname) {
         territorycode = convertTerritoryIsoNameToCode(territoryname, 0);
         if (territorycode < 0) {
-            latitude = 0;
-            longitude = 0;
             return Py_False;
         }
     } else
@@ -70,54 +79,62 @@ static PyObject *decode(PyObject *self, PyObject *args)
 }
 
 
+static char encode_doc[] = 
+ "encode(latitude, longitude, (territoryname, extra_digits))\n\
+\n\
+Encodes the given latitude, longitude to one or more mapcodes.\n\
+Returns a list with one or more pairs of mapcode and territoryname.\n\
+\n\
+Optionally a territoryname can be provided to generate a mapcode in partiucular territory.\n";
 
-char encode_result[MAX_NR_OF_MAPCODE_RESULTS*2];
-static char **encode(double latitude, double longitude, char *territory, int extra_digits)
+static PyObject *encode(PyObject *self, PyObject *args)
 {
-    int territorycode = 0;
-    char **s = (char **) encode_result;
+    double latitude, longitude;
+    char *territoryname = NULL;
+    int extra_digits = 0, territorycode = 0;
+    PyObject *result;
 
-    if (territory) {
-        territorycode = convertTerritoryIsoNameToCode(territory, 0);
-/*
-        printf("debug1: encode: territorystring: %s, code: %d\n", territory, territorycode);
-*/
+    if (!PyArg_ParseTuple(args, "dd|si", &latitude, &longitude, &territoryname, &extra_digits))
+       return NULL;
+
+    // printf("encode: args: %f, %f, %x, %i\n", latitude, longitude, territoryname, extra_digits);
+
+    if (territoryname) {
+        territorycode = convertTerritoryIsoNameToCode(territoryname, 0);
+        printf("debug1: encode: territorystring: %s, code: %d\n", territoryname, territorycode);
+
         if (territorycode < 0) {
-            /* terminate array pointer so caller can detect it's empty */
-            s[0] = 0;
-            return s;
+            return Py_False;
         }
     }
 
-/*    printf("debug2: encode: territorystring: %s, code: %d\n", territory, territorycode);
-*/
-    int n = encodeLatLonToMapcodes((char **) &encode_result, latitude, longitude, territorycode, extra_digits);
+    // printf("encode: territorystring: %s, code: %d\n", territoryname, territorycode);
+
+    char *mapcode_results[MAX_NR_OF_MAPCODE_RESULTS];
+    int n = encodeLatLonToMapcodes(mapcode_results, latitude, longitude, territorycode, extra_digits);
+//    printf("encode: count %d\n", n);
     if (n > 0) {
-/*      for (int i = 0; i < n; ++i) {
-            printf("debug: %s - %s\n", s[i*2], s[(i*2)+1]);
+        result = PyList_New(n);
+        while (n--) {
+            // printf("debug: %d: %s - %s\n", n, mapcode_results[n * 2], mapcode_results[(n * 2) + 1]);
+            PyList_SetItem(result, n, Py_BuildValue("[ss]", (mapcode_results[n * 2]), mapcode_results[(n * 2) + 1]));            
         }
-        printf("debug: count = %d\n", i);
-*/
-        /* terminate array pointer at the end */
-        s[n * 2] = 0;
-
-        return s;
-    } else {
-        /* terminate array pointer at beginning */
-        s[0] = 0;
+        return result;
     }
-    return s;
+    return Py_False;
 }
 
-/*
 
-static char *encode_single(double latitude, double longitude, char *territory, int extra_digits)
-*/
+static char encode_single_doc[] = 
+ "encode_single(latitude, longitude, (territoryname, extra_digits))\n\
+\n\
+Encodes the given latitude, longitude to a mapcode. Optionally a territoryname\n\
+can be provided to generate a mapcode in partiucular territory.\n";
 
 static PyObject *encode_single(PyObject *self, PyObject *args)
 {
     double latitude, longitude;
-    char *territoryname = NULL, *encode_single_result;
+    char *territoryname = NULL;
     int extra_digits = 0, territorycode = 0;
     PyObject *result;
 
@@ -134,10 +151,9 @@ static PyObject *encode_single(PyObject *self, PyObject *args)
 
     // printf("debug: encode_single: territorystring: %s, code: %d\n", territoryname, territorycode);
 
-    encode_single_result = malloc(MAX_NR_OF_MAPCODE_RESULTS);
+    char encode_single_result[MAX_NR_OF_MAPCODE_RESULTS];
     if (encodeLatLonToSingleMapcode(encode_single_result, latitude, longitude, territorycode, extra_digits) > 0) {
         result = Py_BuildValue("s", encode_single_result);
-        free(encode_single_result);
         return result;
     } else
         return Py_False;
@@ -150,8 +166,8 @@ static PyMethodDef mapcode_methods[] = {
     { "version", version, METH_VARARGS, version_doc },
     { "isvalid", isvalid, METH_VARARGS, isvalid_doc },
     { "decode", decode, METH_VARARGS, decode_doc },
-    // { "encode", encode, METH_VARARGS, NULL},
-    { "encode_single", encode_single, METH_VARARGS, "Do a mapcode geocode"},
+    { "encode", encode, METH_VARARGS, encode_doc },
+    { "encode_single", encode_single, METH_VARARGS, encode_single_doc },
     { NULL, NULL, 0, NULL }
 };
 
@@ -160,5 +176,5 @@ static PyMethodDef mapcode_methods[] = {
 
 PyMODINIT_FUNC initmapcode(void)
 {
-    mapcode_module = Py_InitModule("mapcode", mapcode_methods);
+    Py_InitModule("mapcode", mapcode_methods);
 }
