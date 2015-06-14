@@ -52,26 +52,30 @@ will have to update the include directory in setup.py
 
 Get both the Python and C repositories using:
 
-```git clone https://github.com/mapcode-foundation/mapcode-python
+```
+git clone https://github.com/mapcode-foundation/mapcode-python
 git clone https://github.com/mapcode-foundation/mapcode-cpp
 cd mapcode-python
 ```
 
 Compile the package in current directory using:
 
-```python setup.py --inplace
+```
+python setup.py --inplace
 ```
 
 Install in your Python environment using:
 
-```python setup.py install
+```
+python setup.py install
 ```
 
 
 # Usage
 
 
-```import mapcode
+```python
+import mapcode
 
 dir (mapcode)
 
