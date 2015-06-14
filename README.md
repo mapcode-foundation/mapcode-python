@@ -62,19 +62,7 @@ Compile the package in current directory: `python setup.py --inplace`
 Install in your Python environment using: `python setup.py install`
 
 
-## Usage in Python
-
-```python
-import mapcode
-```
-dir (mapcode)
-
-e.g.:
-
-import mapcode
-dir(mapcode)
-['__doc__', '__file__', '__name__', '__package__', 'decode', 'encode', 'encode_single', 'isvalid', 'version']
-```
+# Usage in Python
 
 ## Mapcode syntax validation
 
@@ -103,9 +91,10 @@ False
 ```
 
 
-## Enconding latitude, longitude to a mapcode 
+## Encoding  
 
-For encoding there are two methods avaiable.
+For encoding latitude, longitude to a mapcode there are two methods avaiable:
+encode_single() and encode().
 
 Use the encode_single() method to find one possible mapcode. Optionally 
 a territory code can be provide to encode for just that territory.
@@ -138,9 +127,10 @@ A territory code can be provide to encode for just that territory.
 ```python
 print mapcode.encode(52.376514, 4.908542, 'NLD')
 print mapcode.encode(39.609999,45.949999, 'AZE')
-[['XLT.HWB', 'AZE'], ['2Z.05XL', 'AZE'], ['6N49.HHV', 'AZE']]```
+[['XLT.HWB', 'AZE'], ['2Z.05XL', 'AZE'], ['6N49.HHV', 'AZE']]
+```
 
-## Decoding mapcode to latitude, longitude
+## Decoding
 
 Use the decode() method to decode a mapcode back to latitude and longitude.
 
@@ -164,7 +154,7 @@ print mapcode.decode('D6.58','RU-IN DK.CN0')
 (43.259275, 44.77198)
 ```
 
-A territory is require to give context:
+A territory is require to give context to decoding:
 
 ```python
 print mapcode.decode('IN VY.HV','USA')
