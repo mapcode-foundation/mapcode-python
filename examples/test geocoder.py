@@ -45,8 +45,8 @@ def read_boundary_file(filename, debug=False):
             #     print header_line.strip()
 
             # Do geocode ourself, change format to match fileformat, store in set
-            mapcodes = mapcode.encode(float(lat), float(lon), None)
-            mapcodes_geocoded = set(m_country + ' ' + m_code for m_code, m_country in zip(mapcodes[::2], mapcodes[1::2]))
+            mapcodes = mapcode.encode(float(lat), float(lon))
+            mapcodes_geocoded = set(m_territory + ' ' + m_code for m_code, m_territory in mapcodes)
 
             if mapcodes_in_file != mapcodes_geocoded:
                 print "Geocodes did not match!", header_line, mapcodes_in_file, mapcodes_geocoded

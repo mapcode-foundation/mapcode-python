@@ -32,7 +32,7 @@ static PyObject *version(PyObject *self, PyObject *args)
 static char isvalid_doc[] = 
  "isvalid()\n\
 \n\
-Verify if the provided string has the right mapcode syntax.\n";
+Verify if the provided mapcode has the right syntax.\n";
 
 static PyObject *isvalid(PyObject *self, PyObject *args)
 {
@@ -111,12 +111,11 @@ static PyObject *encode(PyObject *self, PyObject *args)
 
     char *mapcode_results[MAX_NR_OF_MAPCODE_RESULTS];
     int n = encodeLatLonToMapcodes(mapcode_results, latitude, longitude, territorycode, extra_digits);
-//    printf("encode: count %d\n", n);
     if (n > 0) {
         result = PyList_New(n);
         while (n--) {
             // printf("debug: %d: %s - %s\n", n, mapcode_results[n * 2], mapcode_results[(n * 2) + 1]);
-            PyList_SetItem(result, n, Py_BuildValue("[ss]", (mapcode_results[n * 2]), mapcode_results[(n * 2) + 1]));            
+            PyList_SetItem(result, n, Py_BuildValue("(ss)", (mapcode_results[n * 2]), mapcode_results[(n * 2) + 1]));            
         }
         return result;
     }

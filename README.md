@@ -119,15 +119,16 @@ a territory code can be provide to encode for just that territory.
 
 ```python
 print mapcode.encode(52.376514, 4.908542)
-[['49.4V', 'NLD'], ['G9.VWG', 'NLD'], ['DL6.H9L', 'NLD'], ['P25Z.N3Z', 'NLD'], ['VHXGB.1J9J', 'AAA']]
+[('49.4V', 'NLD'), ('G9.VWG', 'NLD'), ('DL6.H9L', 'NLD'), ('P25Z.N3Z', 'NLD'), ('VHXGB.1J9J', 'AAA')]
 ```
 
 A territory code can be provide to encode for just that territory.
 
 ```python
 print mapcode.encode(52.376514, 4.908542, 'NLD')
+[('49.4V', 'NLD'), ('G9.VWG', 'NLD'), ('DL6.H9L', 'NLD'), ('P25Z.N3Z', 'NLD')]
 print mapcode.encode(39.609999,45.949999, 'AZE')
-[['XLT.HWB', 'AZE'], ['2Z.05XL', 'AZE'], ['6N49.HHV', 'AZE']]
+[('XLT.HWB', 'AZE'), ('2Z.05XL', 'AZE'), ('6N49.HHV', 'AZE')]
 ```
 
 ## Decoding
