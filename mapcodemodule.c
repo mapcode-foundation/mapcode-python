@@ -73,7 +73,8 @@ static PyObject *decode(PyObject *self, PyObject *args)
     } else
         territorycode = 0;
 
-    decodeMapcodeToLatLon(&latitude, &longitude, mapcode, territorycode);
+    if (decodeMapcodeToLatLon(&latitude, &longitude, mapcode, territorycode))
+        return Py_False;
 
     return Py_BuildValue("dd", latitude, longitude);
 }
@@ -101,8 +102,6 @@ static PyObject *encode(PyObject *self, PyObject *args)
 
     if (territoryname) {
         territorycode = convertTerritoryIsoNameToCode(territoryname, 0);
-        printf("debug1: encode: territorystring: %s, code: %d\n", territoryname, territorycode);
-
         if (territorycode < 0) {
             return Py_False;
         }
@@ -160,8 +159,7 @@ static PyObject *encode_single(PyObject *self, PyObject *args)
 }
 
 
-/* The methods we have. */
-
+/* The methods we expose in Python. */
 static PyMethodDef mapcode_methods[] = {
     { "version", version, METH_VARARGS, version_doc },
     { "isvalid", isvalid, METH_VARARGS, isvalid_doc },
@@ -173,7 +171,6 @@ static PyMethodDef mapcode_methods[] = {
 
 
 /* Initialisation that gets called when module is imported. */
-
 PyMODINIT_FUNC initmapcode(void)
 {
     Py_InitModule("mapcode", mapcode_methods);
