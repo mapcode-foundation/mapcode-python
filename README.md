@@ -58,11 +58,11 @@ git clone https://github.com/mapcode-foundation/mapcode-cpp
 cd mapcode-python
 ```
 
-Compile the package in current directory: `python setup.py --inplace`
+Compile the package in current directory: `python setup.py build_ext --inplace`
 Install in your Python environment using: `python setup.py install`
 
 
-# Usage in Python
+# Python methods
 
 ## Mapcode syntax validation
 
@@ -105,7 +105,7 @@ print mapcode.encode_single(52.376514, 4.908542)
 NLD 49.4V
 
 For this coordinate there are multiple mapcodes possible, hence providing
-a territory code can give a different one.
+a territory code can give a different result.
 
 print mapcode.encode_single(41.851944, 12.433114)
 ITA 0Z.0Z
@@ -133,7 +133,7 @@ print mapcode.encode(39.609999,45.949999, 'AZE')
 
 ## Decoding
 
-Use the decode() method to decode a mapcode back to latitude and longitude.
+Use the decode() method to translate a mapcode back to latitude and longitude.
 
 ```python
 print mapcode.decode('NLD 49.4V')
@@ -161,5 +161,5 @@ A territory is require to give context to decoding:
 print mapcode.decode('IN VY.HV','USA')
 (39.72795, -86.118444)
 print mapcode.decode('IN VY.HV','RUS')
-(43.193485, 44.826592)```
+(43.193485, 44.826592)
 ```

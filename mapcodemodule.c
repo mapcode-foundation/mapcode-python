@@ -73,10 +73,12 @@ static PyObject *decode(PyObject *self, PyObject *args)
     } else
         territorycode = 0;
 
-    if (decodeMapcodeToLatLon(&latitude, &longitude, mapcode, territorycode))
-        return Py_False;
-
-    return Py_BuildValue("dd", latitude, longitude);
+    if (decodeMapcodeToLatLon(&latitude, &longitude, mapcode, territorycode)) {
+        /* return 999/999 as error values */
+        latitude = 999;
+        longitude = 999;
+    }
+    return Py_BuildValue("ff", latitude, longitude);
 }
 
 
@@ -103,7 +105,7 @@ static PyObject *encode(PyObject *self, PyObject *args)
     if (territoryname) {
         territorycode = convertTerritoryIsoNameToCode(territoryname, 0);
         if (territorycode < 0) {
-            return Py_False;
+            return PyList_New(0);
         }
     }
 
@@ -119,7 +121,7 @@ static PyObject *encode(PyObject *self, PyObject *args)
         }
         return result;
     }
-    return Py_False;
+    return PyList_New(0);
 }
 
 
@@ -144,7 +146,7 @@ static PyObject *encode_single(PyObject *self, PyObject *args)
     if (territoryname) {
         territorycode = convertTerritoryIsoNameToCode(territoryname, 0);
         if (territorycode < 0)
-            return Py_False;
+            return Py_BuildValue("s", NULL);
     }
 
     // printf("debug: encode_single: territorystring: %s, code: %d\n", territoryname, territorycode);
@@ -154,7 +156,7 @@ static PyObject *encode_single(PyObject *self, PyObject *args)
         result = Py_BuildValue("s", encode_single_result);
         return result;
     } else
-        return Py_False;
+        return Py_BuildValue("s", NULL);
 }
 
 
