@@ -6,7 +6,13 @@
 # as test data set.
 #
 # It reads each coordinate in the test dataset, does a geocode using the mapcode module and
-# compare the results with the entries in the test data set.
+# compare the results with the entries in the test data set. In addition it decodes all
+# mapcodes and compares it to the lat/lon in the file.
+#
+# Input format:
+#
+# <number of mapcodes> <latitude> <longitude>
+# <one or more mapcodes lines>
 #
 # Input format example:
 #
@@ -22,42 +28,82 @@
 # AAA TJKM1.D2Z6
 
 
+from __future__ import print_function
 import sys
+import time
 import mapcode
 
 
-def read_boundary_file(filename, debug=False):
-    with open(filename, 'r') as f:
-        geocode_count = 0
+# The allowed margin in latitude, longitude
+allowed_margin = 0.00022
 
+
+def outside_margin(coordinate1, coordinate2):
+    if abs(coordinate1 - coordinate2) > allowed_margin:
+        return True
+    else:
+        return False
+
+
+def decode(latitude_in_file, longitude_in_file, mapcodes_in_file):
+    # Decode all mapcodes from file back to latitude/longitude and compare
+    for line in mapcodes_in_file:
+        m_territory, m_code = line.split(' ')
+        decoded_latitude, decoded_longitude = mapcode.decode(m_code, m_territory)
+
+        if outside_margin(decoded_latitude, latitude_in_file) or \
+            outside_margin(decoded_longitude, longitude_in_file):
+            print('decode: mapcode outside margin! (file: %s, %f, %f) != %f, %f' %
+                (line, latitude_in_file, longitude_in_file, decoded_latitude, decoded_longitude))
+
+    # return how many decodes we have done
+    return len(mapcodes_in_file)
+
+
+def encode(latitude_in_file, longitude_in_file, mapcodes_in_file):
+    # Do encode ourself, change format to match fileformat and compare
+    mapcodes = mapcode.encode(latitude_in_file, longitude_in_file)
+    mapcodes_geocoded = set(m_territory + ' ' + m_code for m_code, m_territory in mapcodes)
+    if mapcodes_in_file != mapcodes_geocoded:
+        print('encode: mapcodes do no match: (file: %s) != %s' % 
+            (mapcodes_in_file, mapcodes_geocoded))
+
+    # return how many encodes we have done
+    return 1
+
+
+def parse_boundary_file(filename, mapcode_function):
+    with open(filename, 'r') as f:
+        counter = 0
+
+        start_time = time.time()
         while True:
             header_line = f.readline()
             if not header_line:
-                print 'EOF'
                 break
 
             # Get header line find out how many mapcodes will follow
-            mapcode_count, lat, lon = header_line.strip().split(' ')
+            mapcode_count, latitude, longitude = header_line.strip().split(' ')
+            latitude = float(latitude)
+            longitude = float(longitude)
+
             # Put all mapcodes from file in a set
             mapcodes_in_file = set(f.readline().strip() for x in range(int(mapcode_count)))
-            # if debug:
-            #     print 'Input file: ', mapcode_count, lat, lon, ' = ', mapcodes_in_file if debug
-            #     print header_line.strip()
 
-            # Do geocode ourself, change format to match fileformat, store in set
-            mapcodes = mapcode.encode(float(lat), float(lon))
-            mapcodes_geocoded = set(m_territory + ' ' + m_code for m_code, m_territory in mapcodes)
+            # do encode or decode
+            counter += mapcode_function(latitude, longitude, mapcodes_in_file)
 
-            if mapcodes_in_file != mapcodes_geocoded:
-                print "Geocodes did not match!", header_line, mapcodes_in_file, mapcodes_geocoded
-            else:
-                geocode_count += 1
-
-            # eat whitespace between entries in source file
+            # eat whitespace between entries in input file
             f.readline()
+
+        duration = time.time() - start_time
+        print('Did %d %ss in %.3f seconds (%d per second).' % (counter,
+            mapcode_function.__name__, duration, counter / duration))
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print('Usage: {} <input file>'.format(sys.argv[0]))
     else:
-        read_boundary_file(sys.argv[1], False)
+        parse_boundary_file(sys.argv[1], decode)
+        parse_boundary_file(sys.argv[1], encode)
