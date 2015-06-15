@@ -18,7 +18,7 @@
 #include "mapcoder.c"
 
 
-static char version_doc[] = 
+static char version_doc[] =
  "version()\n\
 \n\
 Returns the version of the Mapcode C library used by this Python module.\n";
@@ -29,7 +29,7 @@ static PyObject *version(PyObject *self, PyObject *args)
 }
 
 
-static char isvalid_doc[] = 
+static char isvalid_doc[] =
  "isvalid()\n\
 \n\
 Verify if the provided mapcode has the right syntax.\n";
@@ -50,7 +50,7 @@ static PyObject *isvalid(PyObject *self, PyObject *args)
 }
 
 
-static char decode_doc[] = 
+static char decode_doc[] =
  "decode(mapcode, (territoryname))\n\
 \n\
 Decodes the provided string to latitude and longitude. Optionally\n\
@@ -82,7 +82,7 @@ static PyObject *decode(PyObject *self, PyObject *args)
 }
 
 
-static char encode_doc[] = 
+static char encode_doc[] =
  "encode(latitude, longitude, (territoryname, extra_digits))\n\
 \n\
 Encodes the given latitude, longitude to one or more mapcodes.\n\
@@ -97,7 +97,7 @@ static PyObject *encode(PyObject *self, PyObject *args)
     int extra_digits = 0, territorycode = 0;
     PyObject *result;
 
-    if (!PyArg_ParseTuple(args, "dd|si", &latitude, &longitude, &territoryname, &extra_digits))
+    if (!PyArg_ParseTuple(args, "dd|zi", &latitude, &longitude, &territoryname, &extra_digits))
        return NULL;
 
     // printf("encode: args: %f, %f, %x, %i\n", latitude, longitude, territoryname, extra_digits);
@@ -117,7 +117,7 @@ static PyObject *encode(PyObject *self, PyObject *args)
         result = PyList_New(n);
         while (n--) {
             // printf("debug: %d: %s - %s\n", n, mapcode_results[n * 2], mapcode_results[(n * 2) + 1]);
-            PyList_SetItem(result, n, Py_BuildValue("(ss)", (mapcode_results[n * 2]), mapcode_results[(n * 2) + 1]));            
+            PyList_SetItem(result, n, Py_BuildValue("(ss)", (mapcode_results[n * 2]), mapcode_results[(n * 2) + 1]));
         }
         return result;
     }
@@ -125,7 +125,7 @@ static PyObject *encode(PyObject *self, PyObject *args)
 }
 
 
-static char encode_single_doc[] = 
+static char encode_single_doc[] =
  "encode_single(latitude, longitude, (territoryname, extra_digits))\n\
 \n\
 Encodes the given latitude, longitude to a mapcode. Optionally a territoryname\n\
@@ -138,7 +138,7 @@ static PyObject *encode_single(PyObject *self, PyObject *args)
     int extra_digits = 0, territorycode = 0;
     PyObject *result;
 
-    if (!PyArg_ParseTuple(args, "dd|si", &latitude, &longitude, &territoryname, &extra_digits))
+    if (!PyArg_ParseTuple(args, "dd|zi", &latitude, &longitude, &territoryname, &extra_digits))
        return NULL;
 
     // printf("encode_single: args: %f, %f, %x, %i\n", latitude, longitude, territoryname, extra_digits);
