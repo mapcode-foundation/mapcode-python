@@ -116,8 +116,10 @@ def parse_boundary_file(filename, mapcode_function):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print('Usage: {} <input file>'.format(sys.argv[0]))
+    if len(sys.argv) == 1:
+        print('Usage: %s <input file> [input file]' % (sys.argv[0]))
     else:
-        parse_boundary_file(sys.argv[1], decode)
-        parse_boundary_file(sys.argv[1], encode)
+        for file in sys.argv[1::]:
+            print('Processing', file)
+            parse_boundary_file(file, decode)
+            parse_boundary_file(file, encode)
