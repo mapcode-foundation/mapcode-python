@@ -31,6 +31,7 @@
 from __future__ import print_function
 import sys
 import time
+import re
 import mapcode
 
 
@@ -39,7 +40,7 @@ allowed_margin = 0.00022
 
 
 def outside_margin(coordinate1, coordinate2):
-    if abs(coordinate1 - coordinate2) > allowed_margin:
+    if abs(abs(coordinate1) - abs(coordinate2)) > allowed_margin:
         return True
     else:
         return False
@@ -52,23 +53,36 @@ def decode(latitude_in_file, longitude_in_file, mapcodes_in_file):
         decoded_latitude, decoded_longitude = mapcode.decode(m_code, m_territory)
 
         if outside_margin(decoded_latitude, latitude_in_file) or \
-            outside_margin(decoded_longitude, longitude_in_file):
-            print('decode: mapcode outside margin! (file: %s, %f, %f) != %f, %f' %
-                (line, latitude_in_file, longitude_in_file, decoded_latitude, decoded_longitude))
+                outside_margin(decoded_longitude, longitude_in_file):
+                print('decode: mapcode outside margin! (file: %s, %f, %f) != %f, %f' %
+                      (line, latitude_in_file, longitude_in_file, decoded_latitude, decoded_longitude))
 
-    # return how many decodes we have done
+    # Return how many decodes we have done
     return len(mapcodes_in_file)
 
 
+def is_high_precision(mapcode):
+    # Check if third before last character is a hyphen (e.g. GLP 9N0.WN6-W3)
+    if re.match(r'.*-..$', mapcode):
+        return True
+    else:
+        return False
+
+
 def encode(latitude_in_file, longitude_in_file, mapcodes_in_file):
-    # Do encode ourself, change format to match fileformat and compare
-    mapcodes = mapcode.encode(latitude_in_file, longitude_in_file)
+    # Do encode ourself, use extra precision incase input file entry has it
+    if not is_high_precision(list(mapcodes_in_file)[0]):
+        mapcodes = mapcode.encode(latitude_in_file, longitude_in_file)
+    else:
+        mapcodes = mapcode.encode(latitude_in_file, longitude_in_file, None, 2)
+
+    # Change format to match fileformat and compare
     mapcodes_geocoded = set(m_territory + ' ' + m_code for m_code, m_territory in mapcodes)
     if mapcodes_in_file != mapcodes_geocoded:
-        print('encode: mapcodes do no match: (file: %s) != %s' % 
-            (mapcodes_in_file, mapcodes_geocoded))
+        print('encode: mapcodes do no match: (file: %s) != %s' %
+              (mapcodes_in_file, mapcodes_geocoded))
 
-    # return how many encodes we have done
+    # Return how many encodes we have done
     return 1
 
 
@@ -91,14 +105,14 @@ def parse_boundary_file(filename, mapcode_function):
             mapcodes_in_file = set(f.readline().strip() for x in range(int(mapcode_count)))
 
             # do encode or decode
-            counter += mapcode_function(latitude, longitude, mapcodes_in_file)
+            counter += mapcode_function(float(latitude), float(longitude), mapcodes_in_file)
 
             # eat whitespace between entries in input file
             f.readline()
 
         duration = time.time() - start_time
         print('Did %d %ss in %.3f seconds (%d per second).' % (counter,
-            mapcode_function.__name__, duration, counter / duration))
+              mapcode_function.__name__, duration, counter / duration))
 
 
 if __name__ == "__main__":
