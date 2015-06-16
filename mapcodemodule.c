@@ -32,7 +32,7 @@ static PyObject *version(PyObject *self, PyObject *args)
 static char isvalid_doc[] =
  "isvalid()\n\
 \n\
-Verify if the provided mapcode has the right syntax.\n";
+Verify if the provided mapcode has the correct syntax.\n";
 
 static PyObject *isvalid(PyObject *self, PyObject *args)
 {
@@ -160,6 +160,16 @@ static PyObject *encode_single(PyObject *self, PyObject *args)
 }
 
 
+static char mapcode_doc[] =
+"Support for mapcodes. (See http://www.mapcode.org/).\n\
+\n\
+This module exports the following functions:\n\
+    version        Returns the version of the mapcode C-library used.\n\
+    isvalid        Verifies if the provided mapcode has the correct syntax.\n\
+    decode         Decodes a mapcode to latitude and longitude.\n\
+    encode         Encodes latitude and longitude to one or more mapcodes.\n\
+    encode_single  Encodes latitude and longitude to shortest mapcode possible.\n";
+
 /* The methods we expose in Python. */
 static PyMethodDef mapcode_methods[] = {
     { "version", version, METH_VARARGS, version_doc },
@@ -170,9 +180,8 @@ static PyMethodDef mapcode_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-
 /* Initialisation that gets called when module is imported. */
 PyMODINIT_FUNC initmapcode(void)
 {
-    Py_InitModule("mapcode", mapcode_methods);
+    Py_InitModule3("mapcode", mapcode_methods, mapcode_doc);
 }
