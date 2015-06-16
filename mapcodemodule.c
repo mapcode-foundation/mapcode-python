@@ -19,9 +19,9 @@
 
 
 static char version_doc[] =
- "version()\n\
+"version() -> string\n\
 \n\
-Returns the version of the Mapcode C library used by this Python module.\n";
+Returns the version of the Mapcode C library used by this module.\n";
 
 static PyObject *version(PyObject *self, PyObject *args)
 {
@@ -30,7 +30,7 @@ static PyObject *version(PyObject *self, PyObject *args)
 
 
 static char isvalid_doc[] =
- "isvalid()\n\
+"isvalid(mapcode) -> bool\n\
 \n\
 Verify if the provided mapcode has the correct syntax.\n";
 
@@ -51,10 +51,12 @@ static PyObject *isvalid(PyObject *self, PyObject *args)
 
 
 static char decode_doc[] =
- "decode(mapcode, (territoryname))\n\
+"decode(mapcode, (territoryname)) -> (float, float)\n\
 \n\
 Decodes the provided string to latitude and longitude. Optionally\n\
-a territoryname can be provided to disambiguate the mapcode.\n";
+a territoryname can be provided to disambiguate the mapcode.\n\
+\n\
+Returns (999,999) when decoding failed.\n";
 
 static PyObject *decode(PyObject *self, PyObject *args)
 {
@@ -83,12 +85,13 @@ static PyObject *decode(PyObject *self, PyObject *args)
 
 
 static char encode_doc[] =
- "encode(latitude, longitude, (territoryname, extra_digits))\n\
+ "encode(latitude, longitude, (territoryname, (extra_digits))) -> [(string, string)] \n\
 \n\
 Encodes the given latitude, longitude to one or more mapcodes.\n\
-Returns a list with one or more pairs of mapcode and territoryname.\n\
+Returns a list of tuples that contain mapcode and territoryname.\n\
 \n\
-Optionally a territoryname can be provided to generate a mapcode in partiucular territory.\n";
+Optionally a territoryname can be provided to generate a mapcode in\n\
+a particular territory.\n";
 
 static PyObject *encode(PyObject *self, PyObject *args)
 {
@@ -117,7 +120,8 @@ static PyObject *encode(PyObject *self, PyObject *args)
         result = PyList_New(n);
         while (n--) {
             // printf("debug: %d: %s - %s\n", n, mapcode_results[n * 2], mapcode_results[(n * 2) + 1]);
-            PyList_SetItem(result, n, Py_BuildValue("(ss)", (mapcode_results[n * 2]), mapcode_results[(n * 2) + 1]));
+            PyList_SetItem(result, n, Py_BuildValue("(ss)",
+                (mapcode_results[n * 2]), mapcode_results[(n * 2) + 1]));
         }
         return result;
     }
@@ -126,10 +130,12 @@ static PyObject *encode(PyObject *self, PyObject *args)
 
 
 static char encode_single_doc[] =
- "encode_single(latitude, longitude, (territoryname, extra_digits))\n\
+ "encode_single(latitude, longitude, (territoryname, (extra_digits))) -> string\n\
 \n\
-Encodes the given latitude, longitude to a mapcode. Optionally a territoryname\n\
-can be provided to generate a mapcode in partiucular territory.\n";
+Encodes the given latitude, longitude to the shortest mapcode possible.\n\
+\n\
+Optionally a territoryname can be provided to generate a mapcode in\n\
+a particular territory.\n";
 
 static PyObject *encode_single(PyObject *self, PyObject *args)
 {
