@@ -16,7 +16,7 @@
 
 #include "Python.h"
 #include "mapcoder.c"
-
+#include <math.h>
 
 static char version_doc[] =
 "version() -> string\n\
@@ -56,7 +56,7 @@ static char decode_doc[] =
 Decodes the provided string to latitude and longitude. Optionally\n\
 a territoryname can be provided to disambiguate the mapcode.\n\
 \n\
-Returns (999,999) when decoding failed.\n";
+Returns (nan,nan) when decoding failed.\n";
 
 static PyObject *decode(PyObject *self, PyObject *args)
 {
@@ -70,15 +70,17 @@ static PyObject *decode(PyObject *self, PyObject *args)
     if (territoryname) {
         territorycode = convertTerritoryIsoNameToCode(territoryname, 0);
         if (territorycode < 0) {
-            return Py_False;
+            latitude = NAN;
+            longitude = NAN;
+            return Py_BuildValue("ff", latitude, longitude);
         }
     } else
         territorycode = 0;
 
     if (decodeMapcodeToLatLon(&latitude, &longitude, mapcode, territorycode)) {
-        /* return 999/999 as error values */
-        latitude = 999;
-        longitude = 999;
+        /* return nan,nan as error values */
+        latitude = NAN;
+        longitude = NAN;
     }
     return Py_BuildValue("ff", latitude, longitude);
 }
