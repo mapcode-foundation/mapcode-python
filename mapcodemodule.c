@@ -92,7 +92,7 @@ static char encode_doc[] =
 Encodes the given latitude, longitude to one or more mapcodes.\n\
 Returns a list of tuples that contain mapcode and territory context.\n\
 \n\
-Optionally a territory context can be provided to generate a mapcode
+Optionally a territory context can be provided to generate a mapcode\n\
 in particular territory context.\n";
 
 static PyObject *encode(PyObject *self, PyObject *args)
@@ -131,43 +131,6 @@ static PyObject *encode(PyObject *self, PyObject *args)
 }
 
 
-static char encode_single_doc[] =
- "encode_single(latitude, longitude, (territoryname, (extra_digits))) -> string\n\
-\n\
-Encodes the given latitude, longitude to the shortest mapcode possible.\n\
-\n\
-Optionally a territory context can be provided to generate a mapcode\n\
-in a particular territory context.\n";
-
-static PyObject *encode_single(PyObject *self, PyObject *args)
-{
-    double latitude, longitude;
-    char *territoryname = NULL;
-    int extra_digits = 0, territorycode = 0;
-    PyObject *result;
-
-    if (!PyArg_ParseTuple(args, "dd|zi", &latitude, &longitude, &territoryname, &extra_digits))
-       return NULL;
-
-    // printf("encode_single: args: %f, %f, %x, %i\n", latitude, longitude, territoryname, extra_digits);
-
-    if (territoryname) {
-        territorycode = convertTerritoryIsoNameToCode(territoryname, 0);
-        if (territorycode < 0)
-            return Py_BuildValue("s", NULL);
-    }
-
-    // printf("debug: encode_single: territorystring: %s, code: %d\n", territoryname, territorycode);
-
-    char encode_single_result[MAX_NR_OF_MAPCODE_RESULTS];
-    if (encodeLatLonToSingleMapcode(encode_single_result, latitude, longitude, territorycode, extra_digits) > 0) {
-        result = Py_BuildValue("s", encode_single_result);
-        return result;
-    } else
-        return Py_BuildValue("s", NULL);
-}
-
-
 static char mapcode_doc[] =
 "Support for mapcodes. (See http://www.mapcode.org/).\n\
 \n\
@@ -175,8 +138,7 @@ This module exports the following functions:\n\
     version        Returns the version of the mapcode C-library used.\n\
     isvalid        Verifies if the provided mapcode has the correct syntax.\n\
     decode         Decodes a mapcode to latitude and longitude.\n\
-    encode         Encodes latitude and longitude to one or more mapcodes.\n\
-    encode_single  Encodes latitude and longitude to shortest mapcode possible.\n";
+    encode         Encodes latitude and longitude to one or more mapcodes.\n";
 
 /* The methods we expose in Python. */
 static PyMethodDef mapcode_methods[] = {
@@ -184,7 +146,6 @@ static PyMethodDef mapcode_methods[] = {
     { "isvalid", isvalid, METH_VARARGS, isvalid_doc },
     { "decode", decode, METH_VARARGS, decode_doc },
     { "encode", encode, METH_VARARGS, encode_doc },
-    { "encode_single", encode_single, METH_VARARGS, encode_single_doc },
     { NULL, NULL, 0, NULL }
 };
 

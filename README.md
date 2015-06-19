@@ -73,7 +73,6 @@ This module exports the following functions:
     isvalid        Verifies if the provided mapcode has the correct syntax.
     decode         Decodes a mapcode to latitude and longitude.
     encode         Encodes latitude and longitude to one or more mapcodes.
-    encode_single  Encodes latitude and longitude to shortest mapcode possible.
 ```
 
 ## Mapcode version
@@ -125,6 +124,9 @@ mapcodes.
 ```python
 print mapcode.encode(52.376514, 4.908542)
 [('49.4V', 'NLD'), ('G9.VWG', 'NLD'), ('DL6.H9L', 'NLD'), ('P25Z.N3Z', 'NLD'), ('VHXGB.1J9J', 'AAA')]
+
+print mapcode.encode(50,6)
+[('CDH.MH', 'LUX'), ('R9G0.1BV', 'LUX'), ('SHP.98F', 'BEL'), ('R9G0.1BV', 'BEL'), ('0B46.W1Z', 'DEU'), ('R9G0.1BV', 'FRA'), ('VJ0LW.Y8BB', 'AAA')]
 ```
 
 Optionally a territory context can be provide to encode for that context.
@@ -136,20 +138,15 @@ print mapcode.encode(39.609999,45.949999, 'AZE')
 [('XLT.HWB', 'AZE'), ('2Z.05XL', 'AZE'), ('6N49.HHV', 'AZE')]
 ```
 
-Use the encode_single() method to find one possible mapcode.
-Optionally a territory context can be provide to encode for that context.
+The first item in the returned list always contains the shortest mapcode
+with territory context. The last one is always the full international
+mapcode for the provided latitude/longitude.
 
 ```python
-print mapcode.encode_single(52.376514, 4.908542)
-NLD 49.4V
-
-For this coordinate there are multiple mapcodes possible, hence providing
-a territory code can give a different result.
-
-print mapcode.encode_single(41.851944, 12.433114)
-ITA 0Z.0Z
-print mapcode.encode_single(41.851944, 12.433114, 'AAA')
-TJKM1.D2Z6
+print mapcode.encode(50,6)[0]
+('CDH.MH', 'LUX')
+print mapcode.encode(50,6)[-1]
+('VJ0LW.Y8BB', 'AAA')
 ```
 
 ## Decoding
@@ -166,8 +163,8 @@ print mapcode.decode('VHXG9.DNRF')
 ```
 
 An optional territory context can be provide to disambiguate the mapcode.
-
-A territory is require to decode this mapcode:
+For the mapcode 'D6.58' a territory context is require for successfull
+decoding:
 
 ```python
 print mapcode.decode('D6.58')
@@ -176,7 +173,7 @@ print mapcode.decode('D6.58','RU-IN DK.CN0')
 (43.259275, 44.77198)
 ```
 
-A territory context is require to give context to decoding:
+And sometimes the territory context is require to disambiguate:
 
 ```python
 print mapcode.decode('IN VY.HV','USA')
