@@ -16,7 +16,6 @@
 
 #define UWORD unsigned short int // 2-byte unsigned integer
 
-#define mapcode_cversion "1.50.1"
 #define MAXWIDE 10
 #define BASEX 31
 #define MAXFITLONG 6

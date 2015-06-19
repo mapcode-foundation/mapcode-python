@@ -22,6 +22,8 @@
 #define MAX_MAPCODE_RESULT_LEN              24          // Max. number of characters in a single result.
 #define COMPARE_MAPCODE_MISSING_CHARACTERS  -999        // Used for compareWithMapcodeFormat.
 
+#define mapcode_cversion "1.50.1"
+
 /**
  * Encode a latitude, longitude pair (in degrees) to a set of Mapcodes.
  *

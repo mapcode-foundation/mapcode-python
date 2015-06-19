@@ -15,7 +15,7 @@
  */
 
 #include "Python.h"
-#include "mapcoder.c"
+#include "mapcoder.h"
 #include <math.h>
 
 static char version_doc[] =
@@ -54,7 +54,7 @@ static char decode_doc[] =
 "decode(mapcode, (territoryname)) -> (float, float)\n\
 \n\
 Decodes the provided string to latitude and longitude. Optionally\n\
-a territoryname can be provided to disambiguate the mapcode.\n\
+a territorycontext can be provided to disambiguate the mapcode.\n\
 \n\
 Returns (nan,nan) when decoding failed.\n";
 
@@ -90,10 +90,10 @@ static char encode_doc[] =
  "encode(latitude, longitude, (territoryname, (extra_digits))) -> [(string, string)] \n\
 \n\
 Encodes the given latitude, longitude to one or more mapcodes.\n\
-Returns a list of tuples that contain mapcode and territoryname.\n\
+Returns a list of tuples that contain mapcode and territory context.\n\
 \n\
-Optionally a territoryname can be provided to generate a mapcode in\n\
-a particular territory.\n";
+Optionally a territory context can be provided to generate a mapcode
+in particular territory context.\n";
 
 static PyObject *encode(PyObject *self, PyObject *args)
 {
@@ -136,8 +136,8 @@ static char encode_single_doc[] =
 \n\
 Encodes the given latitude, longitude to the shortest mapcode possible.\n\
 \n\
-Optionally a territoryname can be provided to generate a mapcode in\n\
-a particular territory.\n";
+Optionally a territory context can be provided to generate a mapcode\n\
+in a particular territory context.\n";
 
 static PyObject *encode_single(PyObject *self, PyObject *args)
 {

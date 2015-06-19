@@ -7,8 +7,8 @@ from distutils.core import setup, Extension
 setup(
     name='mapcode',
     ext_modules=[Extension('mapcode',
-                           sources=['mapcodemodule.c'],
-                           include_dirs=['../mapcode-cpp/mapcodelib']
+                           sources=['mapcodemodule.c', 'mapcodelib/mapcoder.c'],
+                           include_dirs=['mapcodelib']
                            )],
     version='0.2',
     description='A Python module to do mapcode encoding and decoding.  See http://www.mapcode.com for more information.',
@@ -17,7 +17,7 @@ setup(
     url='https://github.com/mapcode-foundation/mapcode-python',
     license='Apache License 2.0',
     classifiers=[
-       'Development Status :: 3 - Alpha',
+       'Development Status :: 4 - Beta',
        'License :: OSI Approved :: Apache Software License'
        ],
 )

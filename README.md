@@ -37,32 +37,53 @@ At the moment this module is still in development!
 If you encounter any problems with this module, don't hesitate to use the `Issues` session to file your issues.
 Normally, one of our developers should be able to comment on them and fix.
 
-# Prequisites
-
-As this Python module relies upon the Mapcode C library you will
-need to have a compiler installed to be able to build and install
-this module.
-
-The assumption is that the mapcode-cpp source is available in
-../mapcode-cpp/mapcodelib, if it located in a different place you
-will have to update the include directory in setup.py.
-
-
 # Installation
 
-Get both the mapcode Python and C repositories using:
+Get the mapcode Python repository using:
 
 ```
 git clone https://github.com/mapcode-foundation/mapcode-python
-git clone https://github.com/mapcode-foundation/mapcode-cpp
 cd mapcode-python
 ```
 
 Compile the package in current directory: `python setup.py build_ext --inplace`
+
 Install in your Python environment using: `python setup.py install`
 
+# Mapcode C library
+
+This Python module includes a copy of the Mapcode C library in the
+directory mapcodelib. The latest version can be found on
+https://github.com/mapcode-foundation/mapcode-cpp
+
+Updating it by replacing with the latest mapcode library should not
+be an issue. Only the defined external functions are used.
 
 # Python methods
+
+The module exposes a number of methods:
+
+```python
+import mapcode
+print mapcode.__doc__
+Support for mapcodes. (See http://www.mapcode.org/).
+
+This module exports the following functions:
+    version        Returns the version of the mapcode C-library used.
+    isvalid        Verifies if the provided mapcode has the correct syntax.
+    decode         Decodes a mapcode to latitude and longitude.
+    encode         Encodes latitude and longitude to one or more mapcodes.
+    encode_single  Encodes latitude and longitude to shortest mapcode possible.
+```
+
+## Mapcode version
+
+Use version() to get the version of the mapcode C-library.
+
+```python
+print mapcode.version()
+1.50.1
+```
 
 ## Mapcode syntax validation
 
@@ -75,8 +96,8 @@ print mapcode.isvalid('Amsterdam')
 False
 ```
 
-As optional parameter you can pass 1 or 0: if you pass 1, full mapcodes 
-(including optional territory context) will be recognized. If you pass 0, 
+As optional parameter you can pass 1 or 0: if you pass 1, full mapcodes
+(including optional territory context) will be recognized. If you pass 0,
 only “proper” mapcodes will be recognized.
 
 ```python
@@ -91,14 +112,32 @@ False
 ```
 
 
-## Encoding  
+## Encoding
 
-For encoding latitude, longitude to a mapcode there are two methods avaiable:
-encode_single() and encode().
+Convert latitude/longitude to one or more mapcodes. The response always
+contains the 'international' mapcode and only contains a 'local' mapcode
+if there are any non-international mapcode AND they are all of the same
+territory.
 
-Use the encode_single() method to find one possible mapcode. Optionally 
-a territory code can be provide to encode for just that territory.
+Use the encode() method to convert latitude/longitude to all possible
+mapcodes.
 
+```python
+print mapcode.encode(52.376514, 4.908542)
+[('49.4V', 'NLD'), ('G9.VWG', 'NLD'), ('DL6.H9L', 'NLD'), ('P25Z.N3Z', 'NLD'), ('VHXGB.1J9J', 'AAA')]
+```
+
+Optionally a territory context can be provide to encode for that context.
+
+```python
+print mapcode.encode(52.376514, 4.908542, 'NLD')
+[('49.4V', 'NLD'), ('G9.VWG', 'NLD'), ('DL6.H9L', 'NLD'), ('P25Z.N3Z', 'NLD')]
+print mapcode.encode(39.609999,45.949999, 'AZE')
+[('XLT.HWB', 'AZE'), ('2Z.05XL', 'AZE'), ('6N49.HHV', 'AZE')]
+```
+
+Use the encode_single() method to find one possible mapcode.
+Optionally a territory context can be provide to encode for that context.
 
 ```python
 print mapcode.encode_single(52.376514, 4.908542)
@@ -113,27 +152,9 @@ print mapcode.encode_single(41.851944, 12.433114, 'AAA')
 TJKM1.D2Z6
 ```
 
-Use the encode() method to find all possible mapcodes. Optionally 
-a territory code can be provide to encode for just that territory.
-
-
-```python
-print mapcode.encode(52.376514, 4.908542)
-[('49.4V', 'NLD'), ('G9.VWG', 'NLD'), ('DL6.H9L', 'NLD'), ('P25Z.N3Z', 'NLD'), ('VHXGB.1J9J', 'AAA')]
-```
-
-A territory code can be provide to encode for just that territory.
-
-```python
-print mapcode.encode(52.376514, 4.908542, 'NLD')
-[('49.4V', 'NLD'), ('G9.VWG', 'NLD'), ('DL6.H9L', 'NLD'), ('P25Z.N3Z', 'NLD')]
-print mapcode.encode(39.609999,45.949999, 'AZE')
-[('XLT.HWB', 'AZE'), ('2Z.05XL', 'AZE'), ('6N49.HHV', 'AZE')]
-```
-
 ## Decoding
 
-Use the decode() method to translate a mapcode back to latitude and longitude.
+Use the decode() method to convert a mapcode to latitude and longitude.
 
 ```python
 print mapcode.decode('NLD 49.4V')
@@ -144,7 +165,7 @@ print mapcode.decode('VHXG9.DNRF')
 (52.371422, 4.872497)
 ```
 
-An optional territory code can be provide to disambiguate the mapcode.
+An optional territory context can be provide to disambiguate the mapcode.
 
 A territory is require to decode this mapcode:
 
@@ -155,7 +176,7 @@ print mapcode.decode('D6.58','RU-IN DK.CN0')
 (43.259275, 44.77198)
 ```
 
-A territory is require to give context to decoding:
+A territory context is require to give context to decoding:
 
 ```python
 print mapcode.decode('IN VY.HV','USA')
