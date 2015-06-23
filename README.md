@@ -106,8 +106,6 @@ print mapcode.isvalid('VHXG9.FQ9Z',0)
 True
 print mapcode.isvalid('NLD 49.4V', 0)
 False
-
-(This one fails as it is not a full mapcode)
 ```
 
 
@@ -139,12 +137,17 @@ print mapcode.encode(39.609999,45.949999, 'AZE')
 ```
 
 The first item in the returned list always contains the shortest mapcode
-with territory context. The last one is always the full international
-mapcode for the provided latitude/longitude.
+with territory context.
 
 ```python
 print mapcode.encode(50,6)[0]
 ('CDH.MH', 'LUX')
+```
+
+The last entry in the list is always the full international mapcode for
+the provided latitude/longitude.
+
+```python
 print mapcode.encode(50,6)[-1]
 ('VJ0LW.Y8BB', 'AAA')
 ```

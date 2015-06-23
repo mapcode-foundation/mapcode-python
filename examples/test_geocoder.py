@@ -79,8 +79,8 @@ def encode(latitude_in_file, longitude_in_file, mapcodes_in_file):
     # Change format to match fileformat and compare
     mapcodes_geocoded = set(m_territory + ' ' + m_code for m_code, m_territory in mapcodes)
     if mapcodes_in_file != mapcodes_geocoded:
-        print('encode: mapcodes do no match: (file: %s) != %s' %
-              (mapcodes_in_file, mapcodes_geocoded))
+        print('encode(%f,%f): mismatch (file: %s) != %s' %
+              (latitude_in_file, longitude_in_file, mapcodes_in_file, mapcodes_geocoded))
 
     # Return how many encodes we have done
     return 1
