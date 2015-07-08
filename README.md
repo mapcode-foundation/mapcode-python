@@ -160,7 +160,7 @@ Use the decode() method to convert a mapcode to latitude and longitude.
 print mapcode.decode('NLD 49.4V')
 (52.376514, 4.908542)
 print mapcode.decode('IN VY.HV')
-(43.193485, 44.826592)
+(39.72795, -86.118444)
 print mapcode.decode('VHXG9.DNRF')
 (52.371422, 4.872497)
 ```
@@ -171,7 +171,7 @@ decoding:
 
 ```python
 print mapcode.decode('D6.58')
-False
+(nan, nan)
 print mapcode.decode('D6.58','RU-IN DK.CN0')
 (43.259275, 44.77198)
 ```
