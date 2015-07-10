@@ -10,7 +10,7 @@ setup(
                            sources=['mapcodemodule.c', 'mapcodelib/mapcoder.c'],
                            include_dirs=['mapcodelib']
                            )],
-    version='0.4',
+    version='2.0.0.0',
     description='A Python module to do mapcode encoding and decoding.  See http://www.mapcode.com for more information.',
     author='Erik Bos',
     author_email='erik@xs4all.nl',

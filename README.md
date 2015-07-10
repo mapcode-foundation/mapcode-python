@@ -4,42 +4,28 @@ Copyright (C) 2014-2015 Stichting Mapcode Foundation (http://www.mapcode.com)
 
 ----
 
-This Python project contains a module to encode latitude/longitude pairs to mapcodes
-and to decode mapcodes back to latitude/longitude pairs.
+This Python project contains a module to encode latitude/longitude pairs
+to mapcodes and to decode mapcodes back to latitude/longitude pairs.
 
-If you wish to use mapcodes in your own application landscape, consider using running an instance of the
-Mapcode REST API, which can be found on: **https://github.com/mapcode-foundation/mapcode-rest-service**
-
-# License
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-Original C library created by Pieter Geelen. Work on Java version
-of the mapcode library by Rijn Buve and Matthew Lowden. Python
-interface by Erik Bos.
-
-# Status
-
-At the moment this module is still in development!
+If you wish to use mapcodes in your own application landscape, consider
+using running an instance of the Mapcode REST API, which can be found
+on: **https://github.com/mapcode-foundation/mapcode-rest-service**
 
 # Bug Reports and New Feature Requests
 
-If you encounter any problems with this module, don't hesitate to use the `Issues` session to file your issues.
-Normally, one of our developers should be able to comment on them and fix.
+If you encounter any problems with this module, don't hesitate to use the
+`Issues` session to file your issues. Normally, one of our developers
+should be able to comment on them and fix.
 
 # Installation
 
-Get the mapcode Python repository using:
+You install the mapcode module using pip:
+
+```
+pip install mapcode
+```
+
+or compile and install from source:
 
 ```
 git clone https://github.com/mapcode-foundation/mapcode-python
@@ -49,15 +35,6 @@ cd mapcode-python
 Compile the package in current directory: `python setup.py build_ext --inplace`
 
 Install in your Python environment using: `python setup.py install`
-
-# Mapcode C library
-
-This Python module includes a copy of the Mapcode C library in the
-directory mapcodelib. The latest version can be found on
-https://github.com/mapcode-foundation/mapcode-cpp
-
-Updating it by replacing with the latest mapcode library should not
-be an issue. Only the defined external functions are used.
 
 # Python methods
 
@@ -107,7 +84,6 @@ True
 print mapcode.isvalid('NLD 49.4V', 0)
 False
 ```
-
 
 ## Encoding
 
@@ -184,3 +160,30 @@ print mapcode.decode('IN VY.HV','USA')
 print mapcode.decode('IN VY.HV','RUS')
 (43.193485, 44.826592)
 ```
+
+# Mapcode C library
+
+This Python module includes a copy of the Mapcode C library in the
+directory mapcodelib. The latest version can be found on
+https://github.com/mapcode-foundation/mapcode-cpp
+
+Updating it by replacing with the latest mapcode library should not
+be an issue. Only the defined external functions are used.
+
+# License
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Original C library created by Pieter Geelen. Work on Java version
+of the mapcode library by Rijn Buve and Matthew Lowden. Python
+interface by Erik Bos.
