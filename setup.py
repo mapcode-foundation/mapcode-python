@@ -15,7 +15,7 @@ setup(
     author='Erik Bos',
     author_email='erik@xs4all.nl',
     url='https://github.com/mapcode-foundation/mapcode-python',
-    download_url='https://github.com/mapcode-foundation/mapcode-python/tarball/v0.4',
+    download_url='https://github.com/mapcode-foundation/mapcode-python/tarball/v' + version,
     license='Apache License 2.0',
     classifiers=[
        'Development Status :: 5 - Production/Stable',
