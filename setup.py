@@ -3,6 +3,7 @@
 
 from distutils.core import setup, Extension
 
+module_version = '2.0.0.2'
 
 setup(
     name='mapcode',
@@ -10,12 +11,12 @@ setup(
                            sources=['mapcodemodule.c', 'mapcodelib/mapcoder.c'],
                            include_dirs=['mapcodelib']
                            )],
-    version='2.0.0.0',
+    version=module_version,
     description='A Python module to do mapcode encoding and decoding.  See http://www.mapcode.com for more information.',
     author='Erik Bos',
     author_email='erik@xs4all.nl',
     url='https://github.com/mapcode-foundation/mapcode-python',
-    download_url='https://github.com/mapcode-foundation/mapcode-python/tarball/v2.0.0.1',
+    download_url='https://github.com/mapcode-foundation/mapcode-python/tarball/v' + module_version,
     license='Apache License 2.0',
     classifiers=[
        'Development Status :: 5 - Production/Stable',

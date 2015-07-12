@@ -151,7 +151,26 @@ static PyMethodDef mapcode_methods[] = {
 };
 
 /* Initialisation that gets called when module is imported. */
+#if PY_MAJOR_VERSION >= 3
+PyMODINIT_FUNC PyInit_mapcode(void)
+{
+    static struct PyModuleDef mapcode_module = {
+        PyModuleDef_HEAD_INIT,
+        "mapcode",           /* m_name */
+        mapcode_doc,         /* m_doc */
+        -1,                  /* m_size */
+        mapcode_methods,     /* m_methods */
+        NULL,                /* m_reload */
+        NULL,                /* m_traverse */
+        NULL,                /* m_clear */
+        NULL,                /* m_free */
+    };
+
+    return(PyModule_Create(&mapcode_module));
+}
+#else
 PyMODINIT_FUNC initmapcode(void)
 {
     Py_InitModule3("mapcode", mapcode_methods, mapcode_doc);
 }
+#endif
