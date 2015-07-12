@@ -151,7 +151,7 @@ static PyMethodDef mapcode_methods[] = {
 };
 
 /* Initialisation that gets called when module is imported. */
-#ifdef PY_MAJOR_VERSION >= 3
+#if PY_MAJOR_VERSION >= 3
 PyMODINIT_FUNC PyInit_mapcode(void)
 {
     static struct PyModuleDef mapcode_module = {
