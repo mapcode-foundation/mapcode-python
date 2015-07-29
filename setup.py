@@ -3,7 +3,7 @@
 
 from distutils.core import setup, Extension
 
-module_version = '2.0.0.2'
+module_version = '2.0.1.1'
 
 setup(
     name='mapcode',
@@ -23,6 +23,7 @@ setup(
        'Topic :: Scientific/Engineering :: GIS',
        'License :: OSI Approved :: Apache Software License',
        'Programming Language :: Python :: 2.6',
-       'Programming Language :: Python :: 2.7'
+       'Programming Language :: Python :: 2.7',
+       'Programming Language :: Python :: 3'
        ],
 )
