@@ -117,7 +117,7 @@ static PyObject *encode(PyObject *self, PyObject *args)
 
     // printf("encode: territorystring: %s, code: %d\n", territoryname, territorycode);
 
-    char *mapcode_results[MAX_NR_OF_MAPCODE_RESULTS];
+    char *mapcode_results[2 * MAX_NR_OF_MAPCODE_RESULTS];
     int n = encodeLatLonToMapcodes_Deprecated(mapcode_results, latitude, longitude, territorycode, extra_digits);
     if (n > 0) {
         result = PyList_New(n);
