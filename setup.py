@@ -1,9 +1,24 @@
 #!/usr/bin/env python
 
-
+from __future__ import print_function
 from distutils.core import setup, Extension
+import re
 
-module_version = '2.0.1.1'
+
+def mapcode_cversion():
+    HEADERFILE = 'mapcode-cpp/mapcodelib/mapcoder.h'
+
+    with open(HEADERFILE, 'r') as f:
+        for line in f:
+            m = re.match('^#define mapcode_cversion.*"(.*)"', line)
+            if m:
+                return m.group(1)
+
+    raise ValueError('Can not find version number in ' + HEADERFILE)
+
+
+module_version = mapcode_cversion() + '.1'
+print('Module version: ' + module_version)
 
 setup(
     name='mapcode',
