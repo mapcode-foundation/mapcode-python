@@ -8,8 +8,8 @@ module_version = '2.0.1.1'
 setup(
     name='mapcode',
     ext_modules=[Extension('mapcode',
-                           sources=['mapcodemodule.c', 'mapcodelib/mapcoder.c'],
-                           include_dirs=['mapcodelib']
+                           sources=['mapcodemodule.c', 'mapcode-cpp/mapcodelib/mapcoder.c'],
+                           include_dirs=['mapcode-cpp/mapcodelib']
                            )],
     version=module_version,
     description='A Python module to do mapcode encoding and decoding.  See http://www.mapcode.com for more information.',
