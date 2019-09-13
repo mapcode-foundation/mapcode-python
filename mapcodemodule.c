@@ -15,8 +15,8 @@
  */
 
 #include "Python.h"
-#include "basics.h"
 #include "mapcoder.h"
+#include "mapcode_legacy.h"
 #include <math.h>
 
 static char version_doc[] =
@@ -26,7 +26,7 @@ Returns the version of the Mapcode C library used by this module.\n";
 
 static PyObject *version(PyObject *self, PyObject *args)
 {
-    return Py_BuildValue("s", mapcode_cversion);
+    return Py_BuildValue("s", MAPCODE_C_VERSION);
 }
 
 
@@ -43,7 +43,7 @@ static PyObject *isvalid(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "s|i", &mapcode, &includes_territory))
        return NULL;
 
-    if (compareWithMapcodeFormat(mapcode, includes_territory ? 1 : 0) == 0) {
+    if (compareWithMapcodeFormatUtf8(mapcode) == 0) {
         return Py_True;
     } else {
         return Py_False;
@@ -69,7 +69,7 @@ static PyObject *decode(PyObject *self, PyObject *args)
        return NULL;
 
     if (territoryname) {
-        territorycode = convertTerritoryIsoNameToCode(territoryname, 0);
+        territorycode = getTerritoryCode(territoryname, 0);
         if (territorycode < 0) {
             latitude = NAN;
             longitude = NAN;
@@ -78,7 +78,7 @@ static PyObject *decode(PyObject *self, PyObject *args)
     } else
         territorycode = 0;
 
-    if (decodeMapcodeToLatLon(&latitude, &longitude, mapcode, territorycode)) {
+    if (decodeMapcodeToLatLonUtf8(&latitude, &longitude, mapcode, territorycode, NULL)) {
         /* return nan,nan as error values */
         latitude = NAN;
         longitude = NAN;
@@ -108,16 +108,12 @@ static PyObject *encode(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "dd|zi", &latitude, &longitude, &territoryname, &extra_digits))
        return NULL;
 
-    // printf("encode: args: %f, %f, %x, %i\n", latitude, longitude, territoryname, extra_digits);
-
     if (territoryname) {
-        territorycode = convertTerritoryIsoNameToCode(territoryname, 0);
+        territorycode = getTerritoryCode(territoryname, 0);
         if (territorycode < 0) {
             return PyList_New(0);
         }
     }
-
-    // printf("encode: territorystring: %s, code: %d\n", territoryname, territorycode);
 
     char *mapcode_results[2 * MAX_NR_OF_MAPCODE_RESULTS];
     int n = encodeLatLonToMapcodes_Deprecated(mapcode_results, latitude, longitude, territorycode, extra_digits);

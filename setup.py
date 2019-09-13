@@ -2,12 +2,12 @@
 
 from distutils.core import setup, Extension
 
-module_version = '2.0.1.1'
+module_version = '2.5.5.0'
 
 setup(
     name='mapcode',
     ext_modules=[Extension('mapcode',
-                           sources=['mapcodemodule.c', 'mapcodelib/mapcoder.c'],
+                           sources=['mapcodemodule.c', 'mapcodelib/mapcoder.c', 'mapcodelib/mapcode_legacy.c'],
                            include_dirs=['mapcodelib']
                            )],
     version=module_version,
