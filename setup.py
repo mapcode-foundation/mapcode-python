@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 from distutils.core import setup, Extension
 
 module_version = '2.0.1.1'
@@ -12,7 +11,7 @@ setup(
                            include_dirs=['mapcodelib']
                            )],
     version=module_version,
-    description='A Python module to do mapcode encoding and decoding.  See http://www.mapcode.com for more information.',
+    description='A Python module to do mapcode encoding and decoding. See http://www.mapcode.com for more information.',
     author='Erik Bos',
     author_email='erik@xs4all.nl',
     url='https://github.com/mapcode-foundation/mapcode-python',

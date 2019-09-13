@@ -55,9 +55,9 @@ static char decode_doc[] =
 "decode(mapcode, (territoryname)) -> (float, float)\n\
 \n\
 Decodes the provided string to latitude and longitude. Optionally\n\
-a territorycontext can be provided to disambiguate the mapcode.\n\
+a territory context can be provided to disambiguate the mapcode.\n\
 \n\
-Returns (nan,nan) when decoding failed.\n";
+Returns (nan, nan) when decoding failed.\n";
 
 static PyObject *decode(PyObject *self, PyObject *args)
 {
@@ -91,10 +91,12 @@ static char encode_doc[] =
  "encode(latitude, longitude, (territoryname, (extra_digits))) -> [(string, string)] \n\
 \n\
 Encodes the given latitude, longitude to one or more mapcodes.\n\
-Returns a list of tuples that contain mapcode and territory context.\n\
+Returns a list of tuples that contain a mapcode and territory context.\n\
 \n\
 Optionally a territory context can be provided to generate a mapcode\n\
-in particular territory context.\n";
+in particular territory context.\n\
+Territory context AAA is a special case, which means Earth\n\
+(for international mapcodes).\n";
 
 static PyObject *encode(PyObject *self, PyObject *args)
 {
@@ -133,13 +135,13 @@ static PyObject *encode(PyObject *self, PyObject *args)
 
 
 static char mapcode_doc[] =
-"Support for mapcodes. (See http://www.mapcode.org/).\n\
+"Mapcode support library (see http://www.mapcode.com).\n\
 \n\
 This module exports the following functions:\n\
-    version        Returns the version of the mapcode C-library used.\n\
-    isvalid        Verifies if the provided mapcode has the correct syntax.\n\
-    decode         Decodes a mapcode to latitude and longitude.\n\
-    encode         Encodes latitude and longitude to one or more mapcodes.\n";
+    version     Returns the version of the Mapcode C library.\n\
+    isvalid     Verifies if the provided mapcode has the correct syntax.\n\
+    decode      Decodes a mapcode to latitude and longitude.\n\
+    encode      Encodes latitude and longitude to one or more mapcodes.\n";
 
 /* The methods we expose in Python. */
 static PyMethodDef mapcode_methods[] = {

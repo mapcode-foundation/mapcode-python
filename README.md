@@ -1,6 +1,6 @@
 # Mapcode module for Python
 
-Copyright (C) 2014-2015 Stichting Mapcode Foundation (http://www.mapcode.com)
+Copyright (C) 2014-2019 Stichting Mapcode Foundation (http://www.mapcode.com)
 
 ----
 
@@ -19,31 +19,39 @@ should be able to comment on them and fix.
 
 # Installation
 
-You install the mapcode module using pip:
+You install the Mapcode module using `pip`:
 
-```
+```bash
 pip install mapcode
+```
+
+or use `pip3` for Python 3:
+
+```bash
+pip3 install mapcode
 ```
 
 or compile and install from source:
 
-```
+```bash
 git clone https://github.com/mapcode-foundation/mapcode-python
 cd mapcode-python
+
+# Compile the package in current directory: 
+python setup.py build_ext --inplace
+
+# Install in your Python environment using: 
+python setup.py install
 ```
-
-Compile the package in current directory: `python setup.py build_ext --inplace`
-
-Install in your Python environment using: `python setup.py install`
 
 # Python methods
 
 The module exposes a number of methods:
 
 ```python
-import mapcode
-print mapcode.__doc__
-Support for mapcodes. (See http://www.mapcode.org/).
+>>> import mapcode
+>>> print(mapcode.__doc__)
+Support for mapcodes. (See http://www.mapcode.com).
 
 This module exports the following functions:
     version        Returns the version of the mapcode C-library used.
@@ -52,12 +60,20 @@ This module exports the following functions:
     encode         Encodes latitude and longitude to one or more mapcodes.
 ```
 
+Similarly, you can get detailed information for the other methods using:
+```python
+>>> print(mapcode.version.__doc__)
+>>> print(mapcode.isvalid.__doc__)
+>>> print(mapcode.decode.__doc__)
+>>> print(mapcode.encode.__doc__)
+```
+
 ## Mapcode version
 
 Use version() to get the version of the mapcode C-library.
 
 ```python
-print mapcode.version()
+>>> print(mapcode.version())
 1.50.1
 ```
 
@@ -66,9 +82,10 @@ print mapcode.version()
 To validate the syntax of a mapcode string use the isvalid() method.
 
 ```python
-print mapcode.isvalid('VHXG9.FQ9Z')
+>>> print(mapcode.isvalid('VHXG9.FQ9Z'))
 True
-print mapcode.isvalid('Amsterdam')
+
+>>> print(mapcode.isvalid('Amsterdam'))
 False
 ```
 
@@ -77,11 +94,13 @@ As optional parameter you can pass 1 or 0: if you pass 1, full mapcodes
 only “proper” mapcodes will be recognized.
 
 ```python
-print mapcode.isvalid('NLD 49.4V', 1)
+>>> print(mapcode.isvalid('NLD 49.4V', 1))
 True
-print mapcode.isvalid('VHXG9.FQ9Z',0)
+
+>>> print(mapcode.isvalid('VHXG9.FQ9Z',0))
 True
-print mapcode.isvalid('NLD 49.4V', 0)
+
+>>> print(mapcode.isvalid('NLD 49.4V', 0))
 False
 ```
 
@@ -96,19 +115,20 @@ Use the encode() method to convert latitude/longitude to all possible
 mapcodes.
 
 ```python
-print mapcode.encode(52.376514, 4.908542)
+>>> print(mapcode.encode(52.376514, 4.908542))
 [('49.4V', 'NLD'), ('G9.VWG', 'NLD'), ('DL6.H9L', 'NLD'), ('P25Z.N3Z', 'NLD'), ('VHXGB.1J9J', 'AAA')]
 
-print mapcode.encode(50,6)
+>>> print(mapcode.encode(50, 6))
 [('CDH.MH', 'LUX'), ('R9G0.1BV', 'LUX'), ('SHP.98F', 'BEL'), ('R9G0.1BV', 'BEL'), ('0B46.W1Z', 'DEU'), ('R9G0.1BV', 'FRA'), ('VJ0LW.Y8BB', 'AAA')]
 ```
 
 Optionally a territory context can be provide to encode for that context.
 
 ```python
-print mapcode.encode(52.376514, 4.908542, 'NLD')
+>>> print(mapcode.encode(52.376514, 4.908542, 'NLD'))
 [('49.4V', 'NLD'), ('G9.VWG', 'NLD'), ('DL6.H9L', 'NLD'), ('P25Z.N3Z', 'NLD')]
-print mapcode.encode(39.609999,45.949999, 'AZE')
+>>> 
+print(mapcode.encode(39.609999,45.949999, 'AZE'))
 [('XLT.HWB', 'AZE'), ('2Z.05XL', 'AZE'), ('6N49.HHV', 'AZE')]
 ```
 
@@ -116,7 +136,7 @@ The first item in the returned list always contains the shortest mapcode
 with territory context.
 
 ```python
-print mapcode.encode(50,6)[0]
+>>> print(mapcode.encode(50, 6)[0])
 ('CDH.MH', 'LUX')
 ```
 
@@ -124,7 +144,7 @@ The last entry in the list is always the full international mapcode for
 the provided latitude/longitude.
 
 ```python
-print mapcode.encode(50,6)[-1]
+>>> print(mapcode.encode(50,6)[-1])
 ('VJ0LW.Y8BB', 'AAA')
 ```
 
@@ -133,11 +153,13 @@ print mapcode.encode(50,6)[-1]
 Use the decode() method to convert a mapcode to latitude and longitude.
 
 ```python
-print mapcode.decode('NLD 49.4V')
+>>> print(mapcode.decode('NLD 49.4V'))
 (52.376514, 4.908542)
-print mapcode.decode('IN VY.HV')
+
+>>> print(mapcode.decode('IN VY.HV'))
 (39.72795, -86.118444)
-print mapcode.decode('VHXG9.DNRF')
+
+>>> print(mapcode.decode('VHXG9.DNRF'))
 (52.371422, 4.872497)
 ```
 
@@ -146,18 +168,20 @@ For the mapcode 'D6.58' a territory context is require for successfull
 decoding:
 
 ```python
-print mapcode.decode('D6.58')
+>>> print(mapcode.decode('D6.58'))
 (nan, nan)
-print mapcode.decode('D6.58','RU-IN DK.CN0')
+
+>>> print(mapcode.decode('D6.58','RU-IN DK.CN0'))
 (43.259275, 44.77198)
 ```
 
 And sometimes the territory context is require to disambiguate:
 
 ```python
-print mapcode.decode('IN VY.HV','USA')
+>>> print(mapcode.decode('IN VY.HV','USA'))
 (39.72795, -86.118444)
-print mapcode.decode('IN VY.HV','RUS')
+
+>>> print(mapcode.decode('IN VY.HV','RUS'))
 (43.193485, 44.826592)
 ```
 
