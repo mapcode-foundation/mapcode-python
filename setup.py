@@ -1,12 +1,10 @@
-#!/usr/bin/env python
-
-from distutils.core import setup, Extension
+import setuptools
 
 module_version = '2.5.5.0'
 
-setup(
+setuptools.setup(
     name='mapcode',
-    ext_modules=[Extension('mapcode',
+    ext_modules=[setuptools.Extension('mapcode',
                            sources=['mapcodemodule.c', 'mapcodelib/mapcoder.c', 'mapcodelib/mapcode_legacy.c'],
                            include_dirs=['mapcodelib']
                            )],
