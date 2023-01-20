@@ -34,7 +34,6 @@ import time
 import re
 import mapcode
 
-
 # The allowed margin in latitude, longitude
 allowed_margin = 0.00022
 
@@ -49,13 +48,18 @@ def outside_margin(coordinate1, coordinate2):
 def decode(latitude_in_file, longitude_in_file, mapcodes_in_file):
     # Decode all mapcodes from file back to latitude/longitude and compare
     for line in mapcodes_in_file:
-        m_territory, m_code = line.split(' ')
+        try:
+            m_territory, m_code = line.split(' ')
+        except ValueError:
+            m_territory = 'AAA'
+            m_code = line
+
         decoded_latitude, decoded_longitude = mapcode.decode(m_code, m_territory)
 
         if outside_margin(decoded_latitude, latitude_in_file) or \
                 outside_margin(decoded_longitude, longitude_in_file):
-                print('decode: mapcode outside margin! (file: %s, %f, %f) != %f, %f' %
-                      (line, latitude_in_file, longitude_in_file, decoded_latitude, decoded_longitude))
+            print('decode: mapcode outside margin! (file: %s, %f, %f) != %f, %f' %
+                  (line, latitude_in_file, longitude_in_file, decoded_latitude, decoded_longitude))
 
     # Return how many decodes we have done
     return len(mapcodes_in_file)
@@ -63,23 +67,25 @@ def decode(latitude_in_file, longitude_in_file, mapcodes_in_file):
 
 def is_high_precision(mapcode):
     # Check if third before last character is a hyphen (e.g. GLP 9N0.WN6-W3)
-    if re.match(r'.*-..$', mapcode):
-        return True
-    else:
-        return False
+    return re.match(r'.*-.*$', mapcode)
 
 
 def encode(latitude_in_file, longitude_in_file, mapcodes_in_file):
     # Do encode ourself, use extra precision incase input file entry has it
-    if not is_high_precision(list(mapcodes_in_file)[0]):
-        mapcodes = mapcode.encode(latitude_in_file, longitude_in_file)
+    if is_high_precision(list(mapcodes_in_file)[0]):
+        mapcodes = mapcode.encode(latitude_in_file, longitude_in_file, None, 8)
     else:
-        mapcodes = mapcode.encode(latitude_in_file, longitude_in_file, None, 2)
+        mapcodes = mapcode.encode(latitude_in_file, longitude_in_file)
 
     # Change format to match fileformat and compare
-    mapcodes_geocoded = set(m_territory + ' ' + m_code for m_code, m_territory in mapcodes)
+    mapcodes_geocoded = set()
+    for m_code, m_territory in mapcodes:
+        if m_territory == 'AAA':
+            mapcodes_geocoded.add(m_code)
+        else:
+            mapcodes_geocoded.add(m_territory + ' ' + m_code)
     if mapcodes_in_file != mapcodes_geocoded:
-        print('encode(%f,%f): mismatch (file: %s) != %s' %
+        print('encode(%f,%f): mismatch file:%s != encoded:%s' %
               (latitude_in_file, longitude_in_file, mapcodes_in_file, mapcodes_geocoded))
 
     # Return how many encodes we have done
@@ -112,7 +118,7 @@ def parse_boundary_file(filename, mapcode_function):
 
         duration = time.time() - start_time
         print('Did %d %ss in %.3f seconds (%d per second).' % (counter,
-              mapcode_function.__name__, duration, counter / duration))
+                                                               mapcode_function.__name__, duration, counter / duration))
 
 
 if __name__ == "__main__":
